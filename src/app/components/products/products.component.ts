@@ -11,6 +11,7 @@ export class ProductsComponent implements OnInit {
   searchText: string;
   products: any = [];
   counter: any = {};
+  items: any = [];
 
   constructor(private productService: ProductsServiceService) {}
 
@@ -18,6 +19,7 @@ export class ProductsComponent implements OnInit {
     this.productService.listProducts().subscribe(
       (res: any) => {
         this.products = res.data;
+        this.items = res.data;
         if (this.products.length == 0)
           Swal.fire('', 'No data found', 'warning');
       },
@@ -32,7 +34,15 @@ export class ProductsComponent implements OnInit {
   }
 
   search() {
-    console.log(this.searchText);
+    let filter: any = [];
+    if (!this.searchText) this.ngOnInit();
+    else {
+      for (const product of this.items) {
+        if (product.name.toLowerCase().includes(this.searchText.toLowerCase()))
+          filter.push(product);
+      }
+      this.products = filter;
+    }
   }
 
   add(id: number) {
